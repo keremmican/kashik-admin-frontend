@@ -198,7 +198,7 @@ purity-ui-dashboard/
     │   │   └── Tables.js
     │   ├── Pages
     │       ├── SignIn.js
-    │       └── SignUp.js
+    │       └── SignIn.js
     │   └── RTL
     │       └── RTLPage.js
     ├── index.js
