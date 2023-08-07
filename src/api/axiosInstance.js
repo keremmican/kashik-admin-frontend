@@ -1,23 +1,24 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
+const BASE_URL = process.env.REACT_APP_URL;
 
-const api = axios.create({
-  baseURL: process.env.REACT_APP_URL,
+const apiClient = axios.create({
+  baseURL: BASE_URL,
+  timeout: 5000,
 });
 
-api.interceptors.request.use((config) => {
-  const accessToken = getCookieValue('access_token');
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
-  }
-  return config;
-});
+// Request interceptor
+apiClient.interceptors.request.use(
+    (config) => {
+      const access_token = Cookies.get('access_token');
+      if (access_token) {
+        config.headers.Authorization = `Bearer ${access_token}`;
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+);
 
-function getCookieValue(name) {
-  const value = "; " + document.cookie;
-  const parts = value.split("; " + name + "=");
-  if (parts.length === 2) {
-    return parts.pop().split(";").shift();
-  }
-}
-
-export default api;
+export default apiClient;
