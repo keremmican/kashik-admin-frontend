@@ -54,30 +54,30 @@ const AuthRoute = ({ component: Component, ...rest }) => {
   }
 
   if (!accessToken || userRole === "ROLE_GUEST") {
-    if (rest.path === "/user" || rest.path === "/admin") {
-      return <Redirect to="/auth/welcome" />;
+    if (rest.path === "/owner" || rest.path === "/admin") {
+      return <Redirect to="/" />;
     } else {
       return <Route {...rest} render={(props) => <Component {...props} />} />;
     }
   }
 
   if (userRole === "ROLE_ADMIN") {
-    if (rest.path === "/user" || rest.path === "/auth") {
+    if (rest.path === "/owner" || rest.path === "/auth") {
       return <Redirect to="/admin/dashboard" />;
     } else {
       return <Route {...rest} render={(props) => <Component {...props} />} />;
     }
   }
 
-  if (userRole === "ROLE_USER") {
+  if (userRole === "ROLE_OWNER") {
     if (rest.path === "/admin" || rest.path === "/auth") {
-      return <Redirect to="/user/dashboard" />;
+      return <Redirect to="/owner/dashboard" />;
     } else {
       return <Route {...rest} render={(props) => <Component {...props} />} />;
     }
   }
 
-  return <Redirect to="/auth/welcome" />;
+  return <Redirect to="/auth/business" />;
 };
 
 const getCookie = (name) => {

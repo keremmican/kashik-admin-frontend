@@ -8,6 +8,9 @@ export const globalStyles = {
 		orange: {
 			700: '#1f2733'
 		},
+		black: {
+			700: '#000000'
+		}
 	},
 	styles: {
 		global: (props) => ({

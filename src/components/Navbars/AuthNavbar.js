@@ -17,20 +17,20 @@ import {
 } from "components/Icons/Icons";
 import SidebarResponsive from "components/Sidebar/SidebarResponsive";
 import PropTypes from "prop-types";
-import React, { useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import { NavLink } from "react-router-dom";
 import routes from "routes.js";
 import small_logo from "assets/img/small_logo.png";
 import { Icon } from "@iconify/react";
-const currentPath = window.location.pathname;
 
 export default function AuthNavbar(props) {
   const [open, setOpen] = React.useState(false);
   const { colorMode, toggleColorMode } = useColorMode();
+  const [currentPath, setCurrentPath] = useState('');
 
   useEffect(() => {
-    console.log(currentPath)
-  }, [])
+    setCurrentPath(window.location.pathname)
+  }, [window.location.pathname])
   const handleDrawerToggle = () => {
     setOpen(!open);
   };
@@ -40,7 +40,7 @@ export default function AuthNavbar(props) {
     return window.location.href.indexOf(routeName) > -1;
   };
   // Chakra color mode
-  let navbarIcon = useColorModeValue("white.700", "gray.200");
+  let navbarIcon = useColorModeValue("black", "white.700");
   let mainText = useColorModeValue("gray.700", "gray.200");
   let navbarBg = useColorModeValue(
     "linear-gradient(112.83deg, rgba(255, 255, 255, 0.21) 0%, rgba(255, 255, 255, 0) 110.84%)",
@@ -105,10 +105,10 @@ export default function AuthNavbar(props) {
           variant="transparent-with-icon"
           //leftIcon={<HomeIcon color={navbarIcon} w="12px" h="12px" me="0px" />}
         >
-          <Text textColor={"white"}>About us</Text>
+          <Text textColor={navbarIcon}>About us</Text>
         </Button>
       </NavLink>
-      <NavLink to="/auth/business" target="_blank">
+      <NavLink to="/auth/sign-in">
         <Button
           fontSize="sm"
           ms="0px"
@@ -119,7 +119,7 @@ export default function AuthNavbar(props) {
           variant="transparent-with-icon"
           //leftIcon={<PersonIcon color={navbarIcon} w="12px" h="12px" me="0px" />}
         >
-          <Text textColor={"white"}>For business</Text>
+          <Text textColor={navbarIcon}>Sign in</Text>
         </Button>
       </NavLink>
       <IconButton aria-label={"sa"} onClick={toggleColorMode}>
@@ -128,38 +128,38 @@ export default function AuthNavbar(props) {
     </HStack>
   );
   return (
-    <>
-    <Flex
-      position={navbarPosition}
-      top="22px"
-      left="50%"
-      transform="translate(-50%, 0px)"
-      background={navbarBg}
-      border={navbarBorder}
-      boxShadow={navbarShadow}
-      filter={navbarFilter}
-      backdropFilter={navbarBackdrop}
-      borderRadius="15px"
-      px="16px"
-      py="22px"
-      mx="auto"
-      width="calc(100vw)"
-      height="60px"
-      maxH="50%"
-      maxW="90%"
-      alignItems="center"
-      justifyContent="space-between"
-    >
-      <Flex flex="0.5" justifyContent="center">
-        {brand}
-      </Flex>
+      <Flex
+          position={navbarPosition}
+          top="22px"
+          left="50%"
+          transform="translate(-50%, 0px)"
+          background={navbarBg}
+          border={navbarBorder}
+          boxShadow={navbarShadow}
+          filter={navbarFilter}
+          backdropFilter={navbarBackdrop}
+          borderRadius="15px"
+          px="16px"
+          py="22px"
+          mx="auto"
+          width="calc(100vw)"
+          height="60px"
+          maxH="50%"
+          maxW="90%"
+          alignItems="center"
+          justifyContent="space-between"
+      >
+        <Flex flex="0.5" justifyContent="center">
+          {brand}
+        </Flex>
 
-      <Flex flex="1" justifyContent="end">
-        {linksAuth}
-      </Flex>
+        {currentPath === "/auth/business" && (
+            <Flex flex="1" justifyContent="end">
+              {linksAuth}
+            </Flex>
+        )}
 
-    </Flex>
-  </>
+      </Flex>
   );
 }
 
