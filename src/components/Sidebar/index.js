@@ -3,13 +3,15 @@
 import {
   Box, useColorModeValue
 } from "@chakra-ui/react";
-import React from "react";
+import React, {useEffect} from "react";
 import SidebarContent from "./SidebarContent";
+import small_logo from "assets/img/small_logo.png";
+import {useSelector} from "react-redux";
 
 // FUNCTIONS
 
 function Sidebar(props) {
-  // to check for active links and opened collapses
+  const userRole = useSelector((state) => state.auth.userRole);
   const mainPanel = React.useRef();
   let variantChange = "0.2s linear";
 
@@ -47,7 +49,7 @@ function Sidebar(props) {
           m={sidebarMargins}
           borderRadius={sidebarRadius}
         >
-          <SidebarContent routes={routes}
+          <SidebarContent routes={userRole === "ROLE_ADMIN" ? routes[2].views : routes[3].views}
         logoText={"PURITY UI DASHBOARD"}
         display="none"
         sidebarVariant={sidebarVariant}

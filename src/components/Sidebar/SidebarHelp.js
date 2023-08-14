@@ -26,7 +26,7 @@ export function SidebarHelp(props) {
         Need help?
       </Text>
       <Text fontSize="xs" color="white" mb="10px">
-        Please check our docs
+        Please contact us
       </Text>
       <Link
         w="100%"
@@ -48,7 +48,7 @@ export function SidebarHelp(props) {
           }}
           color="black"
         >
-          DOCUMENTATION
+          CONTACT
         </Button>
       </Link>
     </Flex>

@@ -88,8 +88,7 @@ export default function AuthNavbar(props) {
       alignItems="center"
       color={mainText}
     >
-      <Image src={small_logo} alt="logo" boxSize='150px'
-               />
+      <Image src={small_logo} alt="logo" boxSize='150px'/>
     </Link>
   );
   var linksAuth = (

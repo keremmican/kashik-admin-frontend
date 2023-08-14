@@ -1,8 +1,9 @@
 /*eslint-disable*/
 // chakra imports
 import {
+    Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel,
     Box,
-    Button, Flex,
+    Button, Flex, Image,
     Link,
     Stack,
     Text,
@@ -14,12 +15,17 @@ import { Separator } from "components/Separator/Separator";
 import { SidebarHelp } from "components/Sidebar/SidebarHelp";
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
-
-// this function creates the links and collapses that appear in the sidebar (left menu)
-
+import small_logo from "../../assets/img/small_logo.png";
+import {Icon} from "@iconify/react";
+import { css } from '@emotion/react';
 
 const SidebarContent = ({ logoText, routes }) => {
-
+    const buttonStyles = css`
+        &:focus {
+            outline: none !important;
+          box-shadow: none !important;
+        }
+    `;
     // to check for active links and opened collapses
   let location = useLocation();
   // this is for the rest of the collapses
@@ -40,32 +46,49 @@ const SidebarContent = ({ logoText, routes }) => {
       if (prop.redirect) {
         return null;
       }
-      if (prop.category) {
-        var st = {};
-        st[prop["state"]] = !state[prop.state];
-        return (
-          <div key={prop.name}>
-            <Text
-              color={activeColor}
-              fontWeight="bold"
-              mb={{
-                xl: "12px",
-              }}
-              mx="auto"
-              ps={{
-                sm: "10px",
-                xl: "16px",
-              }}
-              py="12px"
-            >
-              {document.documentElement.dir === "rtl"
-                ? prop.rtlName
-                : prop.name}
-            </Text>
-            {createLinks(prop.views)}
-          </div>
-        );
-      }
+
+        if (prop.category) {
+            var st = {};
+            st[prop["state"]] = !state[prop.state];
+            if (prop.category === "OWNER_PAGES_ADMIN" || prop.category === "USER_PAGES_ADMIN") {
+                let iconComponent;
+
+                if (prop.category === "USER_PAGES_ADMIN") {
+                    iconComponent = <Icon icon={"material-symbols:person-outline"} />;
+                } else if (prop.category === "OWNER_PAGES_ADMIN") {
+                    iconComponent = <Icon icon={"mingcute:spoon-line"} />;
+                }
+
+                return (
+                    <Accordion mt={"10px"} allowMultiple key={prop.name}>
+                        <AccordionItem border={"none"}>
+                            <h2>
+                                <AccordionButton css={buttonStyles}>
+                                    <Box flex="1" textAlign="left">
+                                        <Flex align="center">
+                                            <IconBox
+                                                bg="orange.300"
+                                                color="white"
+                                                h="30px"
+                                                w="30px"
+                                                me="12px"
+                                            >
+                                                {iconComponent}
+                                            </IconBox>
+                                            {prop.name}
+                                        </Flex>
+                                    </Box>
+                                    <AccordionIcon />
+                                </AccordionButton>
+                            </h2>
+                            <AccordionPanel>
+                                {createLinks(prop.views)}
+                            </AccordionPanel>
+                        </AccordionItem>
+                    </Accordion>
+                );
+            }
+        }
       return (
         <NavLink to={prop.layout + prop.path} key={prop.name}>
           {activeRoute(prop.layout + prop.path) === "active" ? (
@@ -102,7 +125,7 @@ const SidebarContent = ({ logoText, routes }) => {
                   <Icon>{prop.icon}</Icon>
                 ) : (
                   <IconBox
-                    bg="teal.300"
+                    bg="orange.300"
                     color="white"
                     h="30px"
                     w="30px"
@@ -153,7 +176,7 @@ const SidebarContent = ({ logoText, routes }) => {
                 ) : (
                   <IconBox
                     bg={inactiveBg}
-                    color="teal.300"
+                    color="orange.300"
                     h="30px"
                     w="30px"
                     me="12px"
@@ -178,22 +201,19 @@ const SidebarContent = ({ logoText, routes }) => {
 
   return (
     <>
-        <Box pt={"25px"} mb="12px">
+        <Box mb="12px">
       <Link
-        href={`${process.env.PUBLIC_URL}/#/`}
+        href={`${process.env.PUBLIC_URL}/`}
         target="_blank"
         display="flex"
         lineHeight="100%"
-        mb="30px"
         fontWeight="bold"
         justifyContent="center"
         alignItems="center"
         fontSize="11px"
       >
-        <CreativeTimLogo w="32px" h="32px" me="10px" />
-        <Text fontSize="sm" mt="3px">
-          {logoText}
-        </Text>
+
+          <Image src={small_logo} alt="logo" boxSize='130px'/>
       </Link>
       <Separator></Separator>
     </Box>

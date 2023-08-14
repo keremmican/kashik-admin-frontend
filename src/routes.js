@@ -29,47 +29,96 @@ var dashRoutes = [
     component: SignIn,
     layout: "/auth",
   },
+
   {
-    path: "/dashboard",
-    name: "Dashboard",
-    icon: <HomeIcon color="inherit" />,
-    component: Dashboard,
-    layout: "/admin",
+    name: "ADMIN PAGES",
+    category: "admin",
+    state: "pageCollapse",
+    views: [
+      {
+        name: "OWNER",
+        category: "OWNER_PAGES_ADMIN",
+        views: [
+          {
+            path: "/dashboard",
+            name: "Dashboard",
+            icon: <HomeIcon color="inherit" />,
+            component: Dashboard,
+            layout: "/admin",
+          },
+          {
+            path: "/tables",
+            name: "Tables",
+            icon: <StatsIcon color="inherit" />,
+            component: Tables,
+            layout: "/admin",
+          },
+          {
+            path: "/billing",
+            name: "Billing",
+            icon: <CreditIcon color="inherit" />,
+            component: Billing,
+            layout: "/admin",
+          },
+        ]
+      },
+      {
+        name: "USER",
+        category: "USER_PAGES_ADMIN",
+        views: [
+          {
+            path: "/dashboard",
+            name: "Dashboard",
+            icon: <HomeIcon color="inherit" />,
+            component: Dashboard,
+            layout: "/admin",
+          },
+          {
+            path: "/tables",
+            name: "Tables",
+            icon: <StatsIcon color="inherit" />,
+            component: Tables,
+            layout: "/admin",
+          },
+          {
+            path: "/billing",
+            name: "Billing",
+            icon: <CreditIcon color="inherit" />,
+            component: Billing,
+            layout: "/admin",
+          },
+        ]
+      }
+    ],
   },
+
   {
-    path: "/tables",
-    name: "Tables",
-    icon: <StatsIcon color="inherit" />,
-    component: Tables,
-    layout: "/admin",
-  },
-  {
-    path: "/billing",
-    name: "Billing",
-    icon: <CreditIcon color="inherit" />,
-    component: Billing,
-    layout: "/admin",
-  },
-  {
-    path: "/dashboard",
-    name: "Dashboard",
-    icon: <HomeIcon color="inherit" />,
-    component: Dashboard,
-    layout: "/owner",
-  },
-  {
-    path: "/tables",
-    name: "Tables",
-    icon: <StatsIcon color="inherit" />,
-    component: Tables,
-    layout: "/owner",
-  },
-  {
-    path: "/billing",
-    name: "Billing",
-    icon: <CreditIcon color="inherit" />,
-    component: Billing,
-    layout: "/owner",
+    name: "OWNER PAGES",
+    category: "owner",
+    state: "pageCollapse",
+    views: [
+      {
+        path: "/dashboard",
+        name: "Dashboard",
+        icon: <HomeIcon color="inherit" />,
+        component: Dashboard,
+        layout: "/owner",
+      },
+      {
+        path: "/tables",
+        name: "Tables",
+        icon: <StatsIcon color="inherit" />,
+        component: Tables,
+        layout: "/owner",
+      },
+      {
+        path: "/billing",
+        name: "Billing",
+        icon: <CreditIcon color="inherit" />,
+        component: Billing,
+        layout: "/owner",
+      },
+    ],
   },
 
 ];

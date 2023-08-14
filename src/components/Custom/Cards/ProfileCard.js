@@ -1,14 +1,14 @@
 import {
-  Avatar,
-  Button,
-  Menu, MenuButton, MenuItem, MenuList,
-  Table,
-  Tbody,
-  Text,
-  Th,
-  Thead,
-  Tr,
-  useColorModeValue,
+    Avatar, Box,
+    Button, HStack,
+    Menu, MenuButton, MenuItem, MenuList,
+    Table,
+    Tbody,
+    Text,
+    Th,
+    Thead,
+    Tr,
+    useColorModeValue,
 } from "@chakra-ui/react";
 
 import Card from "components/Card/Card.js";
@@ -27,19 +27,19 @@ const ProfileCard = ({ title, photoSrc, data }) => {
 
   return (
       <div>
-        <Card overflowX={{ sm: "scroll", xl: "hidden" }}>
-          <CardHeader p="0px 0px 0px 0px">
-            <Avatar
-                src={photoSrc}
-                borderRadius="12px"
-                me="16px"
-                size='sm'
-            />
-            <Text fontSize="xl" color={textColor} fontWeight="bold">
-              {title}
-            </Text>
-          </CardHeader>
-        </Card>
+            <Box maxW='sm' borderWidth='1px' borderRadius='lg' overflow='hidden' px={"6px"} py={"6px"}>
+                <HStack>
+                    <Avatar
+                        src={photoSrc}
+                        borderRadius="12px"
+                        me="10px"
+                        size='sm'
+                    />
+                    <Text fontSize="xl" color={textColor} fontWeight="bold" pr={"5px"}>
+                        {title}
+                    </Text>
+                </HStack>
+            </Box>
       </div>
   );
 };
