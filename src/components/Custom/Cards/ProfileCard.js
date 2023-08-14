@@ -1,4 +1,7 @@
 import {
+  Avatar,
+  Button,
+  Menu, MenuButton, MenuItem, MenuList,
   Table,
   Tbody,
   Text,
@@ -12,47 +15,32 @@ import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";
 import CardHeader from "components/Card/CardHeader.js";
 import TablesTableRow from "components/Tables/TablesTableRow";
-import React from "react";
+import React, {useState} from "react";
+import {ChevronDownIcon} from "@chakra-ui/icons";
+import {NavLink} from "react-router-dom";
+import avatar1 from "../../../assets/img/avatars/avatar1.png";
+import {ItemContent} from "../../Menu/ItemContent";
 
-const ProfileCard = ({ title, captions, data }) => {
+const ProfileCard = ({ title, photoSrc, data }) => {
+
   const textColor = useColorModeValue("gray.700", "white");
+
   return (
-    <Card overflowX={{ sm: "scroll", xl: "hidden" }}>
-      <CardHeader p='0px 0px 0px 0px'>
-        <Text fontSize='xl' color={textColor} fontWeight='bold'>
-          {title}
-        </Text>
-      </CardHeader>
-      {/*<CardBody>*/}
-      {/*  <Table variant='simple' color={textColor}>*/}
-      {/*    <Thead>*/}
-      {/*      <Tr my='.8rem' pl='0px' color='gray.400'>*/}
-      {/*        {captions.map((caption, idx) => {*/}
-      {/*          return (*/}
-      {/*            <Th color='gray.400' key={idx} ps={idx === 0 ? "0px" : null}>*/}
-      {/*              {caption}*/}
-      {/*            </Th>*/}
-      {/*          );*/}
-      {/*        })}*/}
-      {/*      </Tr>*/}
-      {/*    </Thead>*/}
-      {/*    <Tbody>*/}
-      {/*      {data.map((row) => {*/}
-      {/*        return (*/}
-      {/*          <TablesTableRow*/}
-      {/*            key={`${row.email}-${row.name}`}*/}
-      {/*            name={row.name}*/}
-      {/*            logo={row.logo}*/}
-      {/*            email={row.email}*/}
-      {/*            subdomain={row.subdomain}*/}
-      {/*            domain={row.domain}*/}
-      {/*          />*/}
-      {/*        );*/}
-      {/*      })}*/}
-      {/*    </Tbody>*/}
-      {/*  </Table>*/}
-      {/*</CardBody>*/}
-    </Card>
+      <div>
+        <Card overflowX={{ sm: "scroll", xl: "hidden" }}>
+          <CardHeader p="0px 0px 0px 0px">
+            <Avatar
+                src={photoSrc}
+                borderRadius="12px"
+                me="16px"
+                size='sm'
+            />
+            <Text fontSize="xl" color={textColor} fontWeight="bold">
+              {title}
+            </Text>
+          </CardHeader>
+        </Card>
+      </div>
   );
 };
 

@@ -193,7 +193,8 @@ function SignIn() {
                     bg: "orange",
                   }}
 
-                  onClick={() => handleLogin()}>
+                  onClick={() => handleLogin()}
+                  onSubmit={() => handleLogin()}>
                 SIGN IN
               </Button>
             </FormControl>

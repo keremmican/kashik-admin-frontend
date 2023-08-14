@@ -26,16 +26,32 @@ import { ProfileIcon, SettingsIcon } from "components/Icons/Icons";
 import { ItemContent } from "components/Menu/ItemContent";
 import SidebarResponsive from "components/Sidebar/SidebarResponsive";
 import PropTypes from "prop-types";
-import React from "react";
+import React, {useState} from "react";
 import { NavLink } from "react-router-dom";
 import routes from "routes.js";
 import ProfileCard from "../Custom/Cards/ProfileCard";
 import { Icon } from '@iconify/react';
+import Card from "../Card/Card";
+import {clearData} from "../../store/actions/authActions";
+import {useDispatch} from "react-redux";
 
 export default function HeaderLinks(props) {
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+    dispatch(clearData());
+    window.location.href = "/auth/business";
+  };
+
   const { variant, children, fixed, secondary, onOpen, ...rest } = props;
 
   const { colorMode, toggleColorMode } = useColorMode();
+  const textColor = useColorModeValue("gray.700", "white");
+
+  const [isOpen, setIsOpen] = useState(false);
 
   // Chakra Color Mode
   let mainTeal = useColorModeValue("teal.300", "teal.300");
@@ -99,9 +115,25 @@ export default function HeaderLinks(props) {
         />
       </InputGroup>
 
-      <NavLink to="/admin/profile">
-        <ProfileCard title={"kerem"} />
-      </NavLink>
+      <Flex px="5px">
+        <Menu>
+          <MenuButton>
+            <ProfileCard title={"kerem"}/>
+          </MenuButton>
+          <MenuList p="16px 8px">
+            <Flex flexDirection="column">
+              <MenuItem borderRadius="8px" mb="10px">
+                <ProfileIcon />
+                <Text ml={2} color={textColor} fontWeight="bold">Profile</Text>
+              </MenuItem>
+              <MenuItem borderRadius="8px" mb="10px" onClick={handleLogout}>
+                <Icon icon="material-symbols:logout" />
+                <Text ml={2} color={textColor} fontWeight="bold">Logout</Text>
+              </MenuItem>
+            </Flex>
+          </MenuList>
+        </Menu>
+      </Flex>
 
       <SidebarResponsive
         logoText={props.logoText}
