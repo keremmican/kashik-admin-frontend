@@ -43,7 +43,6 @@ export default function HeaderLinks(props) {
     document.cookie = "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
     dispatch(clearData());
-    window.location.href = "/auth/business";
   };
 
   const { variant, children, fixed, secondary, onOpen, ...rest } = props;

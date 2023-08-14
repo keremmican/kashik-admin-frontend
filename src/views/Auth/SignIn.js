@@ -3,7 +3,7 @@ import {
   Box,
   Button,
   Flex,
-  FormControl,
+  FormControl, FormErrorMessage, FormHelperText,
   FormLabel, Grid,
   HStack,
   Icon,
@@ -16,9 +16,10 @@ import {
 import axios from "axios";
 // Assets
 import BgSignUp from "assets/img/yatay.png";
-import React, { useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { FaApple, FaFacebook, FaGoogle } from "react-icons/fa";
 import {useDispatch} from "react-redux";
+import {Field, Form, Formik} from "formik";
 
 const BASE_URL = process.env.REACT_APP_URL
 
@@ -30,6 +31,7 @@ function SignIn() {
 
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
+  const ref = useRef();
 
   const [email, setEmail] = useState('');
   const [pwd, setPwd] = useState('');
@@ -38,12 +40,10 @@ function SignIn() {
     const expirationDate = new Date();
     expirationDate.setDate(expirationDate.getDate() + expirationDays);
 
-    // Check if the application is running on a secure context (HTTPS)
     const isSecureContext = window.location.protocol === 'https:';
 
     let cookieValue = encodeURIComponent(value) + '; expires=' + expirationDate.toUTCString() + '; path=/';
 
-    // Set the cookie domain based on localhost (without specifying port)
     const cookieDomain = window.location.hostname;
     cookieValue += '; domain=' + cookieDomain;
 
@@ -52,6 +52,33 @@ function SignIn() {
     }
 
     document.cookie = name + '=' + cookieValue;
+  }
+
+  function handleEmailChange(e)  {
+    let error
+    if (!email) {
+      error = 'Email is required'
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
+      error = "Invalid email type"
+    }
+    return error
+  }
+
+  function handlePasswordChange(e)  {
+    let error
+    if (!pwd)
+      error = 'Password is required'
+    // } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
+    //   error = "Password"
+    // }
+    return error
+  }
+
+  const handleKeyUp = (event) => {
+    // Enter
+    if (event.keyCode === 13) {
+      handleLogin();
+    }
   }
 
   const handleLogin = async () => {
@@ -149,55 +176,90 @@ function SignIn() {
               bg={bgColor}
               boxShadow='0 20px 27px 0 rgb(0 0 0 / 5%)'>
 
-            <FormControl>
+            <Formik
+                initialValues={{ email: "", pwd: "" }}
+                onSubmit={(values, actions) => {
+                  handleLogin(values);
+                  actions.setSubmitting(false);
+                }}
+            >
+              {(props) => (
+                  <Form>
+                    <Field name="email" validate={handleEmailChange}>
+                      {({ field, form }) => (
+                          <FormControl
+                              mb={"10px"}
+                              isInvalid={form.errors.email && form.touched.email}
+                          >
+                            <FormLabel>Email</FormLabel>
+                            <Input
+                                {...field}
+                                placeholder="Your email address"
+                                size="lg"
+                                type={"email"}
+                                ref={ref}
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                onKeyUp={(e) => {
+                                  if (e.keyCode === 13) {
+                                    handleLogin();
+                                  }
+                                }}
+                            />
+                            <FormErrorMessage pt={"1px"} pb={"6px"}>{form.errors.email}</FormErrorMessage>
+                          </FormControl>
+                      )}
+                    </Field>
 
-              <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
-                Email
-              </FormLabel>
-              <Input
-                  fontSize='sm'
-                  ms='4px'
-                  borderRadius='15px'
-                  type='email'
-                  placeholder='Your email address'
-                  mb='24px'
-                  size='lg'
-                  onChange={(e) => setEmail(e.target.value)}
-              />
-              <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
-                Password
-              </FormLabel>
-              <Input
-                  fontSize='sm'
-                  ms='4px'
-                  borderRadius='15px'
-                  type='password'
-                  placeholder='Your password'
-                  mb='24px'
-                  size='lg'
-                  onChange={(e) => setPwd(e.target.value)}
-              />
-              <Button
-                  type='submit'
-                  bg='orange.300'
-                  fontSize='15px'
-                  color='white'
-                  fontWeight='bold'
-                  w='100%'
-                  h='45'
-                  mb='24px'
-                  _hover={{
-                    bg: "orange",
-                  }}
-                  _active={{
-                    bg: "orange",
-                  }}
+                    <Field name="pwd" validate={handlePasswordChange}>
+                      {({ field, form }) => (
+                          <FormControl
+                              mb={"10px"}
+                              isInvalid={form.errors.pwd && form.touched.pwd}
+                          >
+                            <FormLabel>Password</FormLabel>
+                            <Input
+                                {...field}
+                                placeholder="Your password"
+                                size="lg"
+                                type={"password"}
+                                ref={ref}
+                                value={pwd}
+                                onChange={(e) => setPwd(e.target.value)}
+                                onKeyUp={(e) => {
+                                  if (e.keyCode === 13) {
+                                    handleLogin();
+                                  }
+                                }}
+                            />
+                            <FormErrorMessage pt={"1px"} pb={"6px"}>{form.errors.pwd}</FormErrorMessage>
+                          </FormControl>
+                      )}
+                    </Field>
 
-                  onClick={() => handleLogin()}
-                  onSubmit={() => handleLogin()}>
-                SIGN IN
-              </Button>
-            </FormControl>
+                    <Button
+                        type="submit"
+                        bg="orange.300"
+                        fontSize="15px"
+                        color="white"
+                        fontWeight="bold"
+                        w="100%"
+                        h="45"
+                        mt="15px"
+                        mb="24px"
+                        _hover={{
+                          bg: "orange",
+                        }}
+                        _active={{
+                          bg: "orange",
+                        }}
+                        isLoading={props.isSubmitting}
+                    >
+                      SIGN IN
+                    </Button>
+                  </Form>
+              )}
+            </Formik>
             <Flex
                 flexDirection='column'
                 justifyContent='center'
