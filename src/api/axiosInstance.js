@@ -1,24 +1,24 @@
 import axios from 'axios';
-import Cookies from 'js-cookie';
+import store from "../store";
 const BASE_URL = process.env.REACT_APP_URL;
 
 const apiClient = axios.create({
-  baseURL: BASE_URL,
-  timeout: 5000,
+    baseURL: BASE_URL
 });
 
-// Request interceptor
-apiClient.interceptors.request.use(
-    (config) => {
-      const access_token = Cookies.get('access_token');
-      if (access_token) {
-        config.headers.Authorization = `Bearer ${access_token}`;
-      }
-      return config;
+apiClient.interceptors.request.use(async req => {
+        const state = store.getState().auth;
+
+        console.log(state.accessToken)
+
+        if (!req.url.includes("refresh")) {
+            req.headers.Authorization = `Bearer ${state.accessToken}`
+            //req.headers['User-Id'] = state.userId;
+        }
+        return req
     },
-    (error) => {
-      return Promise.reject(error);
-    }
-);
+    error => {
+        return Promise.reject(error)
+    });
 
 export default apiClient;

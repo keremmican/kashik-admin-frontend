@@ -1,7 +1,9 @@
 const initialState = {
   accessToken: null,
+  refreshToken: null,
   userRole: "ROLE_GUEST",
   loading: true,
+  userId: null,
 };
 
 const authReducer = (state = initialState, action) => {
@@ -11,6 +13,11 @@ const authReducer = (state = initialState, action) => {
         ...state,
         accessToken: action.payload,
       };
+    case "SET_REFRESH_TOKEN":
+      return {
+        ...state,
+        refreshToken: action.payload,
+      }
     case "SET_USER_ROLE":
       return {
         ...state,
@@ -20,6 +27,16 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: action.payload,
+      };
+    case "SET_USER_ID":
+      return {
+        ...state,
+        userId: action.payload,
+      };
+    case "SET_IS_LOGGED_IN":
+      return {
+        ...state,
+        isLoggedIn: action.payload,
       };
     case "CLEAR_DATA":
       return initialState;

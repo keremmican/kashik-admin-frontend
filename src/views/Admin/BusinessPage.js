@@ -10,9 +10,12 @@ import {
   useColorModeValue,
   VStack
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import signInImage from "assets/img/dikey.png";
 import axios from "axios";
+import PhoneInput from "react-phone-input-2";
+import 'react-phone-input-2/lib/style.css'
+import store from "../../store";
 
 const BASE_URL = process.env.REACT_APP_URL;
 
@@ -21,48 +24,6 @@ export default function BusinessPage() {
   const textColor = useColorModeValue("gray.700", "white");
   const bgColor = useColorModeValue("white", "gray.700");
   const bgIcons = useColorModeValue("orange.200", "rgba(255, 255, 255, 0.5)");
-
-  const commonCountryCodes = [
-    "+1",   // United States
-    "+44",  // United Kingdom
-    "+91",  // India
-    "+86",  // China
-    "+81",  // Japan
-    "+49",  // Germany
-    "+33",  // France
-    "+39",  // Italy
-    "+34",  // Spain
-    "+7",   // Russia
-    "+61",  // Australia
-    "+82",  // South Korea
-    "+55",  // Brazil
-    "+52",  // Mexico
-    "+880", // Bangladesh
-    "+234", // Nigeria
-    "+20",  // Egypt
-    "+251", // Ethiopia
-    "+98",  // Iran
-    "+62",  // Indonesia
-    "+962", // Jordan
-    "+254", // Kenya
-    "+60",  // Malaysia
-    "+212", // Morocco
-    "+977", // Nepal
-    "+92",  // Pakistan
-    "+63",  // Philippines
-    "+48",  // Poland
-    "+966", // Saudi Arabia
-    "+65",  // Singapore
-    "+27",  // South Africa
-    "+94",  // Sri Lanka
-    "+66",  // Thailand
-    "+216", // Tunisia
-    "+90",  // Turkey
-    "+256", // Uganda
-    "+380", // Ukraine
-    "+971", // United Arab Emirates
-    "+84",  // Vietnam
-  ];
 
   const categories = [
     "Fast Food Establishment",
@@ -82,6 +43,10 @@ export default function BusinessPage() {
     "Winery/Brewery",
   ];
 
+  useEffect(() => {
+    console.log(store.getState().auth.userRole)
+  }, []);
+
   const [formData, setFormData] = useState({
     venueName: '',
     email: '',
@@ -91,22 +56,9 @@ export default function BusinessPage() {
     websiteUrl: '',
   });
 
-  const [code, setCode] = useState(commonCountryCodes[0]);
-
-  const handleCountryCodeChange = (e) => {
-    setCode(e.target.value);
-  };
-
-  const handlePhoneNumberChange = (e) => {
-    const numericRegex = /^[0-9]*$/;
-    if (!numericRegex.test(e.target.value)) {
-      return;
-    }
-    setFormData({ ...formData, phoneNumber: e.target.value });
-  };
-
   const handleApply = () => {
     try {
+      console.log(formData)
       axios.post(BASE_URL + "/auth/restaurant-application", formData)
     } catch (e) {
       console.log("başarısız")
@@ -178,14 +130,14 @@ export default function BusinessPage() {
                 />
 
                 <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
-                  What's your address?
+                  What's your name?
                 </FormLabel>
                 <Input
                   fontSize='sm'
                   ms='4px'
                   borderRadius='15px'
                   type='email'
-                  placeholder='Your address'
+                  placeholder='Your name'
                   mb='24px'
                   size='lg'
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
@@ -194,25 +146,9 @@ export default function BusinessPage() {
                 <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
                   What’s your contactable phone number?
                 </FormLabel>
-                <InputGroup ms='4px' mb='24px' >
-                  <InputLeftAddon>
-                    <Select
-                      value={code}
-                      fontSize="sm"
-                      onChange={handleCountryCodeChange}
-                    >
-                      {commonCountryCodes.map((code) => (
-                        <option key={code} value={code}>
-                          {code}
-                        </option>
-                      ))}
-                    </Select>
-                  </InputLeftAddon>
-                  <Input fontSize='sm' type='tel' placeholder='Your phone number' borderRadius='15px' inputMode="numeric" // Yalnızca sayı girişini sağlamak için "numeric" kullanıyoruz
-                         pattern="[0-9]*"
-                         value={formData.phoneNumber}
-                         onChange={handlePhoneNumberChange}/>
-                </InputGroup>
+                <PhoneInput country={'tr'}
+                            onChange={(e) => setFormData({ ...formData, phoneNumber: e })}
+                />
 
                 {/*<FormLabel ms='4px' fontSize='sm' fontWeight='normal'>*/}
                 {/*  What's your website url?{" "}*/}
@@ -236,7 +172,7 @@ export default function BusinessPage() {
                 </FormLabel>
                 <Select ms='4px' mb='24px' placeholder='Your category' borderRadius='15px' fontSize='sm'
                         onChange={(e) => setFormData({ ...formData, category: e.target.value })}>
-                  {categories.map((category) => <option value={category}> {category} </option>)}
+                  {categories.map((category, key) => <option key={key} value={category}> {category} </option>)}
                 </Select>
               </FormControl>
             </VStack>

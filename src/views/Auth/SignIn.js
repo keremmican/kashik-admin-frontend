@@ -20,7 +20,8 @@ import React, {useEffect, useRef, useState} from "react";
 import { FaApple, FaFacebook, FaGoogle } from "react-icons/fa";
 import {useDispatch} from "react-redux";
 import {Field, Form, Formik} from "formik";
-
+import {setAccessToken, setIsLoggedIn, setRefreshToken, setUserId, setUserRole} from "../../store/actions/authActions";
+import store from "../../store";
 const BASE_URL = process.env.REACT_APP_URL
 
 function SignIn() {
@@ -35,24 +36,6 @@ function SignIn() {
 
   const [email, setEmail] = useState('');
   const [pwd, setPwd] = useState('');
-
-  function setSecureCookie(name, value, expirationDays) {
-    const expirationDate = new Date();
-    expirationDate.setDate(expirationDate.getDate() + expirationDays);
-
-    const isSecureContext = window.location.protocol === 'https:';
-
-    let cookieValue = encodeURIComponent(value) + '; expires=' + expirationDate.toUTCString() + '; path=/';
-
-    const cookieDomain = window.location.hostname;
-    cookieValue += '; domain=' + cookieDomain;
-
-    if (isSecureContext) {
-      cookieValue += '; Secure';
-    }
-
-    document.cookie = name + '=' + cookieValue;
-  }
 
   function handleEmailChange(e)  {
     let error
@@ -86,45 +69,26 @@ function SignIn() {
       const loginResponse = await axios.post(`${BASE_URL}/auth/authenticate-admin`, {
         email: email,
         password: pwd
-      });
+      }, {withCredentials: true});
 
-      const {access_token, refresh_token} = loginResponse.data;
+      const {access_token, refresh_token, userId, role} = loginResponse.data;
 
-      setSecureCookie('access_token', access_token, 1); // 1 day expiration
-      setSecureCookie('refresh_token', refresh_token, 7); // 7 days expiration
-
-      let role = checkUserRole(access_token)
+      store.dispatch(setUserId(userId))
+      store.dispatch(setAccessToken(access_token))
+      store.dispatch(setRefreshToken(refresh_token))
+      store.dispatch(setUserRole(role))
+      store.dispatch(setIsLoggedIn(true))
 
       window.location.href = '/admin/dashboard'
 
       console.log('Login successful!');
       console.log('Access Token:', access_token);
       console.log('Refresh Token:', refresh_token);
+      console.log('Role:', role)
     } catch (e) {
       console.log('Login error:', e.message);
     }
   }
-
-  const checkUserRole = async (accessToken) => {
-    try {
-      if (accessToken) {
-        const response = await axios.post(
-            BASE_URL + "/auth/validate-token?token=" + accessToken
-        );
-        dispatch({ type: "SET_USER_ROLE", payload: response.data });
-        return response.data
-      } else {
-        dispatch({ type: "SET_USER_ROLE", payload: "ROLE_GUEST" });
-        return response.data
-      }
-    } catch (error) {
-      console.error("User role check failed:", error);
-      dispatch({ type: "SET_USER_ROLE", payload: "ROLE_GUEST" });
-      return response.data
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const [page, setPage] = useState('');
 

@@ -34,15 +34,19 @@ import { Icon } from '@iconify/react';
 import Card from "../Card/Card";
 import {clearData} from "../../store/actions/authActions";
 import {useDispatch} from "react-redux";
+import apiClient from "../../api/axiosInstance";
+const BASE_URL = process.env.REACT_APP_URL;
 
 export default function HeaderLinks(props) {
   const dispatch = useDispatch();
 
-  const handleLogout = () => {
-    document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-
+  const handleLogout = async () => {
+    await apiClient.post(`${BASE_URL}/auth/logout`, {}, {
+      withCredentials: true
+    });
     dispatch(clearData());
+
+    window.location.href = '/auth/business'
   };
 
   const { variant, children, fixed, secondary, onOpen, ...rest } = props;
