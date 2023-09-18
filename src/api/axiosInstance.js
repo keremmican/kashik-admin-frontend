@@ -9,11 +9,9 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(async req => {
         const state = store.getState().auth;
 
-        console.log(state.accessToken)
-
         if (!req.url.includes("refresh")) {
             req.headers.Authorization = `Bearer ${state.accessToken}`
-            //req.headers['User-Id'] = state.userId;
+            req.headers['User-Id'] = state.userId;
         }
         return req
     },
