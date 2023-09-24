@@ -5,17 +5,17 @@ import {
   FormControl, FormHelperText,
   FormLabel,
   Grid,
-  Input, InputGroup, InputLeftAddon, Select,
+  Input,
   Text,
   useColorModeValue,
   VStack
 } from "@chakra-ui/react";
 import React, {useEffect, useState} from "react";
-import signInImage from "assets/img/dikey.png";
+import signInImage from "../../assets/img/dikey.png";
 import axios from "axios";
-import PhoneInput from "react-phone-input-2";
 import 'react-phone-input-2/lib/style.css'
 import store from "../../store";
+import {setAccessToken, setIsLoggedIn, setRefreshToken, setUserId, setUserRole} from "../../store/actions/authActions";
 
 const BASE_URL = process.env.REACT_APP_URL;
 
@@ -48,18 +48,30 @@ export default function BusinessPage() {
   }, []);
 
   const [formData, setFormData] = useState({
-    venueName: '',
+    companyName: '',
     email: '',
-    address: '',
-    phoneNumber: '',
-    category: '',
-    websiteUrl: '',
+    name: '',
+    username: '',
+    password: '',
+    pwdConfirm: '',
   });
 
-  const handleApply = () => {
+  const handleApply = async () => {
     try {
-      console.log(formData)
-      axios.post(BASE_URL + "/auth/restaurant-application", formData)
+      if (formData.password !== formData.pwdConfirm) {
+        return
+      }
+
+      const response = await axios.post(BASE_URL + "/auth/owner-register", formData, {withCredentials: true})
+
+      const {access_token, refresh_token, userId, role} = response.data;
+      store.dispatch(setUserId(userId))
+      store.dispatch(setAccessToken(access_token))
+      store.dispatch(setRefreshToken(refresh_token))
+      store.dispatch(setUserRole(role))
+      store.dispatch(setIsLoggedIn(true))
+
+      window.location.href = '/owner/dashboard'
     } catch (e) {
       console.log("başarısız")
     }
@@ -81,8 +93,6 @@ export default function BusinessPage() {
             background='transparent'
             borderRadius='15px'
             p='40px'>
-
-            <Text>sa</Text>
           </Flex>
 
           <Flex
@@ -102,21 +112,26 @@ export default function BusinessPage() {
               </Text>
               <FormControl>
                 <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
-                  What’s your main venue name?
+                  Company name
                 </FormLabel>
                 <Input
                   fontSize='sm'
                   ms='4px'
                   borderRadius='15px'
                   type='email'
-                  placeholder='Your venue name'
+                  placeholder='Your company name'
                   mb='24px'
                   size='lg'
-                  onChange={(e) => setFormData({ ...formData, venueName: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                  onKeyUp={(e) => {
+                    if (e.keyCode === 13) {
+                      handleApply();
+                    }
+                  }}
                 />
 
                 <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
-                  What’s your email address?
+                  Email address
                 </FormLabel>
                 <Input
                   fontSize='sm'
@@ -127,10 +142,15 @@ export default function BusinessPage() {
                   mb='24px'
                   size='lg'
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onKeyUp={(e) => {
+                    if (e.keyCode === 13) {
+                      handleApply();
+                    }
+                  }}
                 />
 
                 <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
-                  What's your name?
+                  Name
                 </FormLabel>
                 <Input
                   fontSize='sm'
@@ -140,14 +160,35 @@ export default function BusinessPage() {
                   placeholder='Your name'
                   mb='24px'
                   size='lg'
-                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onKeyUp={(e) => {
+                    if (e.keyCode === 13) {
+                      handleApply();
+                    }
+                  }}
                 />
 
                 <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
-                  What’s your contactable phone number?
+                  Username
                 </FormLabel>
-                <PhoneInput country={'tr'}
-                            onChange={(e) => setFormData({ ...formData, phoneNumber: e })}
+                {/*<PhoneInput country={'tr'}*/}
+                {/*            onChange={(e) => setFormData({ ...formData, phoneNumber: e })}*/}
+                {/*/>*/}
+
+                <Input
+                    fontSize='sm'
+                    ms='4px'
+                    borderRadius='15px'
+                    type='email'
+                    placeholder='Your number'
+                    mb='24px'
+                    size='lg'
+                    onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                    onKeyUp={(e) => {
+                      if (e.keyCode === 13) {
+                        handleApply();
+                      }
+                    }}
                 />
 
                 {/*<FormLabel ms='4px' fontSize='sm' fontWeight='normal'>*/}
@@ -167,13 +208,51 @@ export default function BusinessPage() {
                 {/*  onChange={(e) => setFormData({ ...formData, websiteUrl: e.target.value })}*/}
                 {/*/>*/}
 
+                {/*<FormLabel ms='4px' fontSize='sm' fontWeight='normal'>*/}
+                {/*  What’s the category?*/}
+                {/*</FormLabel>*/}
+                {/*<Select ms='4px' mb='24px' placeholder='Your category' borderRadius='15px' fontSize='sm'*/}
+                {/*        onChange={(e) => setFormData({ ...formData, category: e.target.value })}>*/}
+                {/*  {categories.map((category, key) => <option key={key} value={category}> {category} </option>)}*/}
+                {/*</Select>*/}
+
                 <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
-                  What’s the category?
+                  Password
                 </FormLabel>
-                <Select ms='4px' mb='24px' placeholder='Your category' borderRadius='15px' fontSize='sm'
-                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}>
-                  {categories.map((category, key) => <option key={key} value={category}> {category} </option>)}
-                </Select>
+                <Input
+                    fontSize='sm'
+                    ms='4px'
+                    borderRadius='15px'
+                    type='email'
+                    placeholder='Your password'
+                    mb='24px'
+                    size='lg'
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    onKeyUp={(e) => {
+                      if (e.keyCode === 13) {
+                        handleApply();
+                      }
+                    }}
+                />
+
+                <FormLabel ms='4px' fontSize='sm' fontWeight='normal'>
+                  Confirm password
+                </FormLabel>
+                <Input
+                    fontSize='sm'
+                    ms='4px'
+                    borderRadius='15px'
+                    type='email'
+                    placeholder='Confirm password'
+                    mb='24px'
+                    size='lg'
+                    onChange={(e) => setFormData({ ...formData, pwdConfirm: e.target.value })}
+                    onKeyUp={(e) => {
+                      if (e.keyCode === 13) {
+                        handleApply();
+                      }
+                    }}
+                />
               </FormControl>
             </VStack>
 

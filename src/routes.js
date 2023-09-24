@@ -3,16 +3,14 @@ import Dashboard from "views/Dashboard/Dashboard";
 import Tables from "views/Dashboard/Tables";
 import Billing from "views/Dashboard/Billing";
 import SignIn from "./views/Auth/SignIn.js";
+import Onboarding from "./views/Owner/Onboarding"
 
 import {
   HomeIcon,
   StatsIcon,
   CreditIcon,
-  PersonIcon,
-  DocumentIcon,
-  RocketIcon,
 } from "components/Icons/Icons";
-import BusinessPage from "./views/Admin/BusinessPage";
+import BusinessPage from "./views/Auth/BusinessPage";
 
 var dashRoutes = [
   {
@@ -62,6 +60,7 @@ var dashRoutes = [
           },
         ]
       },
+
       {
         name: "USER",
         category: "USER_PAGES_ADMIN",
@@ -120,6 +119,21 @@ var dashRoutes = [
       },
     ],
   },
+
+  {
+    name: "ONBOARDING PAGES",
+    category: "onboarding",
+    state: "pageCollapse",
+    views: [
+      {
+        path: "",
+        name: "Onboarding",
+        icon: <HomeIcon color="inherit" />,
+        component: Onboarding,
+        layout: "/onboarding",
+      }
+    ]
+  }
 
 ];
 export default dashRoutes;

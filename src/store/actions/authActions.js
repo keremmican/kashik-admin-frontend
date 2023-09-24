@@ -33,6 +33,20 @@ export const setUserId = (userId) => {
   };
 };
 
+export const setUsername = (username) => {
+  return {
+    type: "SET_USERNAME",
+    payload: username,
+  };
+};
+
+export const setUserStatus = (status) => {
+  return {
+    type: "SET_USER_STATUS",
+    payload: status,
+  };
+};
+
 export const setIsLoggedIn = (isLoggedIn) => {
   return {
     type: "SET_IS_LOGGED_IN",

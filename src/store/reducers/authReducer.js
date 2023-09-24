@@ -4,6 +4,8 @@ const initialState = {
   userRole: "ROLE_GUEST",
   loading: true,
   userId: null,
+  username: null,
+  userStatus: null
 };
 
 const authReducer = (state = initialState, action) => {
@@ -33,6 +35,16 @@ const authReducer = (state = initialState, action) => {
         ...state,
         userId: action.payload,
       };
+    case "SET_USERNAME":
+      return {
+        ...state,
+        username: action.payload,
+      }
+    case "SET_USER_STATUS":
+      return {
+        ...state,
+        userStatus: action.payload,
+      }
     case "SET_IS_LOGGED_IN":
       return {
         ...state,

@@ -10,6 +10,7 @@ import AuthRoute from "./views/Auth/AuthRoute";
 import AuthLayout from "layouts/Auth.js";
 import AdminLayout from "layouts/Admin.js";
 import OwnerLayout from "layouts/Owner.js";
+import OnboardingLayout from "layouts/Onboarding.js";
 
 const store = createStore(rootReducer);
 
@@ -20,6 +21,7 @@ const App = () => {
         <AuthRoute path="/auth" component={AuthLayout} />
         <AuthRoute path="/admin" component={AdminLayout} />
           <AuthRoute path="/owner" component={OwnerLayout} />
+          <AuthRoute path="/onboarding" component={OnboardingLayout} />
         <Redirect from={"/"} to="/auth/business" />
       </Switch>
     </BrowserRouter>

@@ -80,11 +80,6 @@ function SignIn() {
       store.dispatch(setIsLoggedIn(true))
 
       window.location.href = '/admin/dashboard'
-
-      console.log('Login successful!');
-      console.log('Access Token:', access_token);
-      console.log('Refresh Token:', refresh_token);
-      console.log('Role:', role)
     } catch (e) {
       console.log('Login error:', e.message);
     }

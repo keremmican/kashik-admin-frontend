@@ -29,24 +29,22 @@ export default function Dashboard(props) {
         return window.location.pathname !== '/admin/full-screen-maps';
     };
     const getActiveRoute = (routes) => {
-        let activeRoute = 'Default Brand Text';
+        const currentLocation = window.location.href;
+        let activeRoute = "Default Brand Text";
+
         for (let i = 0; i < routes.length; i++) {
-            if (routes[i].collapse) {
-                let collapseActiveRoute = getActiveRoute(routes[i].views);
-                if (collapseActiveRoute !== activeRoute) {
-                    return collapseActiveRoute;
-                }
-            } else if (routes[i].category) {
-                let categoryActiveRoute = getActiveRoute(routes[i].views);
+            if (routes[i].views) {
+                const categoryActiveRoute = getActiveRoute(routes[i].views);
                 if (categoryActiveRoute !== activeRoute) {
                     return categoryActiveRoute;
                 }
             } else {
-                if (window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1) {
+                if (currentLocation.indexOf(routes[i].layout + routes[i].path) !== -1) {
                     return routes[i].name;
                 }
             }
         }
+
         return activeRoute;
     };
     // This changes navbar state(fixed or not)
@@ -70,13 +68,10 @@ export default function Dashboard(props) {
     };
     const getRoutes = (routes) => {
         return routes.map((prop, key) => {
-            if (prop.collapse) {
+            if (prop.category) {
                 return getRoutes(prop.views);
             }
-            if (prop.category === 'account') {
-                return getRoutes(prop.views);
-            }
-            if (prop.layout === '/owner') {
+            if (prop.layout === '/onboarding') {
                 return <Route path={prop.layout + prop.path} component={prop.component} key={key} />;
             } else {
                 return null;
@@ -115,7 +110,7 @@ export default function Dashboard(props) {
                         <PanelContainer>
                             <Switch>
                                 {getRoutes(routes)}
-                                <Redirect from='/owner' to='/owner/dashboard' />
+                                <Redirect from='/admin' to='/admin/dashboard' />
                             </Switch>
                         </PanelContainer>
                     </PanelContent>

@@ -4,7 +4,15 @@ import axios from "axios";
 import Loading from "react-loading";
 import store from "../../store";
 import apiClient from "../../api/axiosInstance";
-import {setAccessToken, setIsLoggedIn, setUserId, setUserRole} from "../../store/actions/authActions";
+import {
+  clearData,
+  setAccessToken,
+  setIsLoggedIn,
+  setUserId,
+  setUsername,
+  setUserRole
+} from "../../store/actions/authActions";
+import {getIn} from "formik";
 
 const BASE_URL = process.env.REACT_APP_URL;
 
@@ -13,18 +21,6 @@ const AuthRoute = ({ component: Component, ...rest }) => {
   const userRole = store.getState().auth.userRole
   let accessToken = store.getState().auth.accessToken;
   let loggedIn = store.getState().auth.isLoggedIn
-
-  const deneme = async () => {
-    console.log("sa")
-    try {
-        await apiClient.get('/owner/get-owner-login-info').then(
-            (response) => console.log(response)
-        )
-
-    } catch (e) {
-      console.log(e)
-    }
-  }
 
   const checkUserRole = async () => {
     try {
@@ -37,30 +33,18 @@ const AuthRoute = ({ component: Component, ...rest }) => {
       store.dispatch(setUserRole(role))
       store.dispatch(setIsLoggedIn(true))
       console.log(access_token)
-
-      // if (accessToken) {
-      //   const response = await axios.post(`${BASE_URL}/auth/refresh-token`);
-      //   const {access_token, refresh_token, userId, role} = response.data;
-      //   store.dispatch(setUserId(userId))
-      //   store.dispatch(setAccessToken(access_token))
-      //   store.dispatch(setUserRole(role))
-         deneme()
-      //  } //else {
-      //   dispatch({ type: "SET_USER_ROLE", payload: "ROLE_GUEST" });
-      // }
     } catch (error) {
-      // document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      // document.cookie = "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      //
-      // dispatch(clearData());
-      // console.error("User role check failed:", error);
-      // dispatch({ type: "SET_USER_ROLE", payload: "ROLE_GUEST" });
+      store.dispatch(clearData())
+
+      if (window.location.pathname !== '/auth/business') {
+        window.location.href = '/auth/business'
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
+  useEffect( () => {
     checkUserRole();
   }, []);
 
@@ -81,15 +65,23 @@ const AuthRoute = ({ component: Component, ...rest }) => {
   }
 
   if (!accessToken || userRole === "ROLE_GUEST") {
-    if (rest.path === "/owner" || rest.path === "/admin") {
+    if (rest.path === "/owner" || rest.path === "/admin" || rest.path === "/owner") {
       return <Redirect to="/" />;
     } else {
       return <Route {...rest} render={(props) => <Component {...props} />} />;
     }
   }
 
+  if (userRole === "ROLE_ONBOARDING") {
+    if (rest.path === "/admin" || rest.path === "/owner" || rest.path === "/auth") {
+      return <Redirect to="/onboarding" />;
+    } else {
+      return <Route {...rest} render={(props) => <Component {...props} />} />;
+    }
+  }
+
   if (userRole === "ROLE_ADMIN") {
-    if (rest.path === "/owner" || rest.path === "/auth") {
+    if (rest.path === "/owner" || rest.path === "/auth" || rest.path === "/onboarding") {
       return <Redirect to="/admin/dashboard" />;
     } else {
       return <Route {...rest} render={(props) => <Component {...props} />} />;
@@ -97,7 +89,7 @@ const AuthRoute = ({ component: Component, ...rest }) => {
   }
 
   if (userRole === "ROLE_OWNER") {
-    if (rest.path === "/admin" || rest.path === "/auth") {
+    if (rest.path === "/admin" || rest.path === "/auth" || rest.path === "/onboarding") {
       return <Redirect to="/owner/dashboard" />;
     } else {
       return <Route {...rest} render={(props) => <Component {...props} />} />;

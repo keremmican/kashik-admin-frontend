@@ -26,19 +26,35 @@ import { ProfileIcon, SettingsIcon } from "components/Icons/Icons";
 import { ItemContent } from "components/Menu/ItemContent";
 import SidebarResponsive from "components/Sidebar/SidebarResponsive";
 import PropTypes from "prop-types";
-import React, {useState} from "react";
-import { NavLink } from "react-router-dom";
+import React, {useEffect, useState} from "react";
 import routes from "routes.js";
 import ProfileCard from "../Custom/Cards/ProfileCard";
 import { Icon } from '@iconify/react';
-import Card from "../Card/Card";
-import {clearData} from "../../store/actions/authActions";
-import {useDispatch} from "react-redux";
+import {clearData, setUsername} from "../../store/actions/authActions";
+import {useDispatch, useSelector} from "react-redux";
 import apiClient from "../../api/axiosInstance";
+import store from "../../store";
 const BASE_URL = process.env.REACT_APP_URL;
 
 export default function HeaderLinks(props) {
   const dispatch = useDispatch();
+  const [username, setUsername] = useState(null)
+
+  useEffect(() => {
+    getInfo()
+  }, []);
+
+  const getInfo = async () => {
+    try {
+      await apiClient.get('/auth/get-user-login-info').then(
+          (response) => {
+            store.dispatch(setUsername(response.data.username))
+            setUsername(response.data.username)
+          })
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   const handleLogout = async () => {
     await apiClient.post(`${BASE_URL}/auth/logout`, {}, {
@@ -121,7 +137,7 @@ export default function HeaderLinks(props) {
       <Flex px="8px">
         <Menu>
           <MenuButton>
-            <ProfileCard title={"kerem"}/>
+            <ProfileCard title={username}/>
           </MenuButton>
           <MenuList p="16px 8px">
             <Flex flexDirection="column">
