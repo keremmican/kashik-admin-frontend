@@ -39,6 +39,7 @@ const BASE_URL = process.env.REACT_APP_URL;
 export default function HeaderLinks(props) {
   const dispatch = useDispatch();
   const [username, setUsername] = useState(null)
+  const userRole = store.getState().auth.userRole;
 
   useEffect(() => {
     getInfo()
@@ -91,48 +92,50 @@ export default function HeaderLinks(props) {
       alignItems="center"
       flexDirection="row"
     >
-      <InputGroup
-        cursor="pointer"
-        bg={inputBg}
-        borderRadius="15px"
-        w={{
-          sm: "128px",
-          md: "200px",
-        }}
-        me={{ sm: "auto", md: "20px" }}
-        _focus={{
-          borderColor: { mainTeal },
-        }}
-        _active={{
-          borderColor: { mainTeal },
-        }}
-      >
-        <InputLeftElement
-          children={
-            <IconButton
-              bg="inherit"
-              borderRadius="inherit"
-              _hover="none"
-              _active={{
-                bg: "inherit",
-                transform: "none",
-                borderColor: "transparent",
+      {userRole !== "ROLE_ONBOARDING" && (
+          <InputGroup
+              cursor="pointer"
+              bg={inputBg}
+              borderRadius="15px"
+              w={{
+                sm: "128px",
+                md: "200px",
               }}
+              me={{ sm: "auto", md: "20px" }}
               _focus={{
-                boxShadow: "none",
+                borderColor: { mainTeal },
               }}
-              icon={<SearchIcon color={searchIcon} w="15px" h="15px" />}
-            ></IconButton>
-          }
-        />
-        <Input
-          fontSize="xs"
-          py="11px"
-          color={mainText}
-          placeholder="Type here..."
-          borderRadius="inherit"
-        />
-      </InputGroup>
+              _active={{
+                borderColor: { mainTeal },
+              }}
+          >
+            <InputLeftElement
+                children={
+                  <IconButton
+                      bg="inherit"
+                      borderRadius="inherit"
+                      _hover="none"
+                      _active={{
+                        bg: "inherit",
+                        transform: "none",
+                        borderColor: "transparent",
+                      }}
+                      _focus={{
+                        boxShadow: "none",
+                      }}
+                      icon={<SearchIcon color={searchIcon} w="15px" h="15px" />}
+                  ></IconButton>
+                }
+            />
+            <Input
+                fontSize="xs"
+                py="11px"
+                color={mainText}
+                placeholder="Type here..."
+                borderRadius="inherit"
+            />
+          </InputGroup>
+      )}
 
       <Flex px="8px">
         <Menu>

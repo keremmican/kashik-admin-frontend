@@ -1,24 +1,80 @@
-import Card from "../../components/Card/Card";
-import {Box, Flex, Text} from "@chakra-ui/react";
+import {
+    Box, Flex, Text
+} from '@chakra-ui/react'
 import {useEffect, useState} from "react";
 import apiClient from "../../api/axiosInstance";
-import { Icon } from '@iconify/react';
-import store from "../../store";
-import {setUsername} from "../../store/actions/authActions";
+import UserStatusCard from "../../components/Card/user/UserStatusCard";
+import Card from "../../components/Card/Card";
+import {
+    Step,
+    StepDescription,
+    StepIcon,
+    StepIndicator,
+    StepNumber,
+    StepSeparator,
+    StepStatus,
+    StepTitle,
+    Stepper,
+    useSteps,
+} from '@chakra-ui/react'
+import OnboardingPersonalInfoCard from "../../components/Card/onboarding/OnboardingPersonalInfoCard";
+import OnboardingCompanyInfoCard from "../../components/Card/onboarding/OnboardingCompanyInfoCard";
+import OnboardingDocumentsCard from "../../components/Card/onboarding/OnboardingDocumentsCard";
 
-const BASE_URL = process.env.REACT_APP_URL;
+const steps = [
+    { title: 'First', description: 'Personal Info' },
+    { title: 'Second', description: 'Company Info' },
+    { title: 'Third', description: 'Documents' },
+]
 
 export default function Onboarding() {
+    const { activeStep } = useSteps({
+        index: 1,
+        count: steps.length,
+    })
+
+    const onStepChange = () => {
+
+    }
+
     const [status, setStatus] = useState(null);
     const [userStatus, setUserStatus] = useState(null)
+
+    const [userStatusForm, setUserStatusForm] = useState({
+        icon: "",
+        title: "",
+        text: ""
+    })
+
+    function getUserStatusInfo(userStatus) {
+        switch (userStatus) {
+            case "BANNED":
+                setUserStatusForm({icon: "akar-icons:cross",
+                    title: "You have been banned!",
+                    text: "Contact us if you think this isn't right."})
+                break
+            case "VERIFICATION":
+                setUserStatusForm({icon: "ci:mail",
+                    title: "Verify your email address.",
+                    text: "We send an email to verify that you are a real person. Please verify your email address to progress."})
+                break
+            case "WAITING_FOR_APPROVE":
+                setUserStatusForm({icon: "iconamoon:clock-light",
+                    title: "Waiting for approve.",
+                    text: "Contact us if you have questions in mind."})
+                break
+            default:
+                return null
+        }
+    }
 
     useEffect(() => {
         const getOnboarding = async () => {
             await apiClient.get("/onboarding").then((response) =>
                 {
-                    console.log(response.data.status)
                     setStatus(response.data.status)
                     setUserStatus(response.data.userStatus)
+                    getUserStatusInfo(response.data.userStatus)
                 }
             )
         }
@@ -27,19 +83,42 @@ export default function Onboarding() {
 
     return(
         <Flex flexDirection='column' alignItems={"center"} justifyContent={"center"} pt={{ base: "120px", md: "200px" }}>
-            {userStatus !== "ACTIVE" ? (
-                <>
-                    <Box>
-                        <Icon icon={"ci:mail"} style={{ fontSize: '136px'}} />
-                    </Box>
-                    <Box textAlign="center">
-                        <Text fontWeight="bold" fontSize="30">Verify your email address.</Text>
-                        <Text>We send an email to verify that you are a real person. Please verify your email address to progress.</Text>
-                    </Box>
-                </>
+            {userStatus === "ACTIVE" ? ( //TODO normalde başına ünlem koyulacak.
+                <UserStatusCard icon={userStatusForm.icon}
+                title={userStatusForm.title}
+                text={userStatusForm.text}/>
             ) : (
                 status === "IN_PROGRESS" && (
-                    <Card>ONBOARDING</Card>
+                    <>
+                        <Stepper size='lg' index={activeStep} colorScheme='orange'>
+                            {steps.map((step, index) => (
+                                <Step key={index}>
+                                    <StepIndicator>
+                                        <StepStatus
+                                            complete={<StepIcon />}
+                                            incomplete={<StepNumber />}
+                                            active={<StepNumber />}
+                                        />
+                                    </StepIndicator>
+
+                                    <Box flexShrink='0'>
+                                        <StepTitle>{step.title}</StepTitle>
+                                        <StepDescription>{step.description}</StepDescription>
+                                    </Box>
+
+                                    <StepSeparator />
+                                </Step>
+                            ))}
+                        </Stepper>
+
+                        <Flex flexDirection='column' alignItems={"center"} justifyContent={"center"} pt={{ base: "12px", md: "50px" }}>
+                            {activeStep === 1 && <OnboardingPersonalInfoCard onChange/>}
+                            {activeStep === 2 && <OnboardingCompanyInfoCard />}
+                            {activeStep === 3 && <OnboardingDocumentsCard />}
+                        </Flex>
+
+
+                    </>
                 )
             )}
 

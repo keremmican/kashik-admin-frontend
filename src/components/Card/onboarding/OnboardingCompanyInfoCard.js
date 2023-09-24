@@ -1,9 +1,12 @@
+import {Card} from "@chakra-ui/react";
 
 
 const OnboardingCompanyInfoCard = () => {
 
 
-    return(<></>)
+    return(<>
+    <Card>COMPANY</Card>
+    </>)
 }
 
 export default OnboardingCompanyInfoCard;
