@@ -55,6 +55,8 @@
 	},
 	"scripts": {
 		"start": "react-scripts start",
+		"start:dev": "env-cmd -f .env.dev npm run-script start",
+		"start:prod": "env-cmd -f .env.prod npm run-script start",
 		"build": "react-scripts build && gulp licenses",
 		"test": "react-scripts test --env=jsdom",
 		"eject": "react-scripts eject",
@@ -68,6 +70,7 @@
 		"typescript": "4.2.4"
 	},
 	"devDependencies": {
+		"env-cmd": "^10.1.0",
 		"@babel/plugin-transform-react-jsx-source": "^7.14.5",
 		"eslint-config-prettier": "8.3.0",
 		"eslint-plugin-prettier": "3.4.0",
