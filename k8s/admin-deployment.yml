@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kashik-admin-frontend
+  labels:
+    name: kashik-admin-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: kashik-admin-frontend
+  template:
+    metadata:
+      name: kashik-admin-frontend
+      labels:
+        name: kashik-admin-frontend
+    spec:
+      imagePullSecrets:
+      - name: registrypullsecret
+      containers:
+        - image: keremmican/kashik-admin-frontend:tag
+          name: kashik-admin-frontend
+          ports:
+            - containerPort: 3000
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          # resources:
+          #   limits:
+          #     memory: 4Gi
+          #     cpu: 100m
+          #   requests:
+          #     memory: 3Gi
+          #     cpu: 80m
